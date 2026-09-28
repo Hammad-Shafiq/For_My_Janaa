@@ -7,9 +7,13 @@
 
 <title>For You ❤️</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Great+Vibes&family=Playfair+Display:wght@500;600;700&family=Poppins:wght@400;500;600;700&display=swap">
+
 <style>
 
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Great+Vibes&family=Playfair+Display:wght@500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
 
 :root{
     --pink:#f5a6bd;
@@ -3014,11 +3018,403 @@ input:focus-visible{
 .memory-lightbox-hint{position:relative;z-index:2;margin-top:16px;color:#f8dfe7;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;text-align:center}
 body.memory-viewer-open{overflow:hidden;touch-action:none}
 @media(max-width:600px){.memory-lightbox{padding:22px 12px calc(26px + env(safe-area-inset-bottom))}.memory-lightbox-frame{width:min(92vw,430px);max-height:80svh;border-radius:23px;padding:6px}.memory-lightbox-image{max-height:calc(80svh - 12px);border-radius:18px}.memory-lightbox-close{top:-12px;right:-5px;width:40px;height:40px}.memory-lightbox-hint{margin-top:14px}}
+
+
+/* =========================================================
+   PERFORMANCE + MOBILE UX OPTIMIZATION
+   Keeps the existing design/content while reducing expensive
+   rendering work on phones and low-power devices.
+========================================================= */
+
+html{
+    -webkit-text-size-adjust:100%;
+    text-rendering:optimizeLegibility;
+}
+
+body{
+    overscroll-behavior-x:none;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+}
+
+.screen{
+    contain:layout paint;
+    transform:translateZ(0);
+}
+
+.btn,
+.chat,
+.memory-center,
+.hero-image,
+.final-image{
+    -webkit-backface-visibility:hidden;
+    backface-visibility:hidden;
+}
+
+/* Don't waste GPU work behind the memory viewer. */
+body.memory-viewer-open #advancedCelebrationCanvas,
+body.memory-viewer-open .advanced-screen-aura,
+body.memory-viewer-open .advanced-edge-glow{
+    visibility:hidden;
+}
+
+@media(max-width:600px){
+    /* Mobile GPUs handle opacity/transform better than large blur stacks. */
+    .auth-card{
+        backdrop-filter:blur(10px);
+        -webkit-backdrop-filter:blur(10px);
+        box-shadow:0 22px 55px #000b,inset 0 1px 0 #ffffff12;
+    }
+
+    .auth-success{
+        backdrop-filter:blur(10px);
+        -webkit-backdrop-filter:blur(10px);
+    }
+
+    .opening-content::before{
+        filter:blur(12px);
+    }
+
+    .home-glow,
+    .glow-orb,
+    .auth-glow{
+        filter:blur(32px);
+    }
+
+    .hero-image{
+        box-shadow:0 20px 55px #000b,0 0 0 1px #f6c4d744,0 0 38px #d85d7e2b;
+    }
+
+    /* Reduce continuous background work while keeping the visual feel. */
+    .open-stars{
+        animation-duration:34s;
+        opacity:.20;
+    }
+
+    .memory-orbit{
+        animation-duration:24s;
+    }
+
+    .chat{
+        box-shadow:0 16px 34px #000a;
+    }
+
+    .advanced-edge-glow{
+        animation-duration:7s;
+    }
+}
+
+@media(max-width:380px){
+    .auth-card{
+        backdrop-filter:none;
+        -webkit-backdrop-filter:none;
+        background:linear-gradient(145deg,#ffffff12,#ffffff08);
+    }
+
+    .auth-success{
+        backdrop-filter:none;
+        -webkit-backdrop-filter:none;
+    }
+}
+
+@media(prefers-reduced-motion:reduce){
+    .memory-orbit,
+    .chat,
+    .open-stars,
+    .auth-heart,
+    .open-heart{
+        animation:none!important;
+    }
+}
+
+
+/* =========================================================
+   PREMIUM VISUAL UX — VISUAL ONLY
+   Adds depth, touch feedback and cinematic atmosphere without
+   changing existing copy, controls or story flow.
+========================================================= */
+
+/* Soft ambient layer — created by JS, never blocks interaction. */
+#premiumAmbient{
+    position:fixed;
+    inset:0;
+    z-index:998;
+    pointer-events:none;
+    overflow:hidden;
+    opacity:.72;
+    transition:opacity .7s ease;
+}
+
+.premium-particle{
+    position:absolute;
+    left:var(--x);
+    top:var(--y);
+    width:var(--size);
+    height:var(--size);
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(255,239,245,.72) 0 18%,rgba(245,166,189,.28) 45%,transparent 72%);
+    opacity:var(--opacity);
+    animation:premiumDrift var(--duration) ease-in-out var(--delay) infinite alternate;
+    will-change:transform,opacity;
+}
+
+.premium-particle::after{
+    content:"";
+    position:absolute;
+    inset:-3px;
+    border-radius:50%;
+    background:inherit;
+    filter:blur(3px);
+    opacity:.55;
+}
+
+@keyframes premiumDrift{
+    from{transform:translate3d(0,0,0) scale(.82)}
+    to{transform:translate3d(var(--dx),var(--dy),0) scale(1.18)}
+}
+
+/* A very light edge vignette makes the content feel more cinematic. */
+#premiumAmbient::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at 50% 42%,transparent 42%,rgba(4,2,6,.16) 100%);
+    opacity:.6;
+}
+
+/* All interactive controls receive tactile feedback. */
+.btn,
+.memory-clickable,
+.memory-lightbox-close{
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+}
+
+.btn{
+    transition:transform .22s cubic-bezier(.16,1,.3,1),filter .22s ease,box-shadow .22s ease;
+}
+
+.btn:active{
+    transform:translateY(1px) scale(.965);
+    filter:brightness(1.08);
+}
+
+.memory-clickable{
+    transform-origin:center;
+}
+
+.memory-clickable:hover{
+    filter:brightness(1.06) saturate(1.04);
+}
+
+.memory-clickable:active{
+    transform:scale(.965) !important;
+    filter:brightness(1.12) saturate(1.08);
+}
+
+/* Image loading feels intentional instead of abrupt. */
+img:not(.memory-lightbox-image){
+    opacity:1;
+}
+
+img.premium-image-loading{
+    opacity:.001;
+}
+
+img.premium-image-ready{
+    opacity:1;
+    transition:opacity .65s ease;
+}
+
+/* Gentle section depth without altering existing screen transition. */
+.screen.screen-enter .wrap > *{
+    will-change:opacity,transform;
+}
+
+.screen.screen-enter .wrap > *:nth-child(1){animation:premiumContentIn .62s .04s both cubic-bezier(.16,1,.3,1)}
+.screen.screen-enter .wrap > *:nth-child(2){animation:premiumContentIn .62s .10s both cubic-bezier(.16,1,.3,1)}
+.screen.screen-enter .wrap > *:nth-child(3){animation:premiumContentIn .62s .16s both cubic-bezier(.16,1,.3,1)}
+.screen.screen-enter .wrap > *:nth-child(4){animation:premiumContentIn .62s .22s both cubic-bezier(.16,1,.3,1)}
+.screen.screen-enter .wrap > *:nth-child(5){animation:premiumContentIn .62s .28s both cubic-bezier(.16,1,.3,1)}
+
+@keyframes premiumContentIn{
+    from{opacity:.01;transform:translate3d(0,10px,0)}
+    to{opacity:1;transform:none}
+}
+
+/* Cake: subtle spotlight behind the existing interactive cake. */
+#cake .cake-stage{
+    position:relative;
+    isolation:isolate;
+}
+
+#cake .cake-stage::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:min(72vw,330px);
+    aspect-ratio:1;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(245,166,189,.18),rgba(230,196,119,.07) 38%,transparent 70%);
+    filter:blur(12px);
+    z-index:-1;
+    animation:cakeSpotlight 4.8s ease-in-out infinite;
+    pointer-events:none;
+}
+
+@keyframes cakeSpotlight{
+    0%,100%{opacity:.62;transform:translate(-50%,-50%) scale(.88)}
+    50%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}
+}
+
+/* Give the orbit cards a subtle glass edge and moving highlight. */
+.chat{
+    border:1px solid rgba(255,255,255,.10);
+    box-shadow:0 18px 38px rgba(0,0,0,.55),0 0 0 1px rgba(245,166,189,.05);
+    overflow:hidden;
+}
+
+.chat::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:linear-gradient(120deg,transparent 25%,rgba(255,255,255,.12) 47%,transparent 68%);
+    transform:translateX(-130%);
+    animation:memorySheen 6.5s ease-in-out infinite;
+}
+
+.chat2::after{animation-delay:1.4s}
+.chat3::after{animation-delay:2.8s}
+.chat4::after{animation-delay:4.2s}
+
+@keyframes memorySheen{
+    0%,65%,100%{transform:translateX(-130%)}
+    78%{transform:translateX(130%)}
+}
+
+/* Letter: a restrained paper texture, kept behind the actual writing. */
+.paper{
+    position:relative;
+    isolation:isolate;
+    overflow:hidden;
+}
+
+.paper::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:-1;
+    opacity:.28;
+    background-image:radial-gradient(rgba(120,70,75,.11) .7px,transparent .8px);
+    background-size:7px 7px;
+    mix-blend-mode:multiply;
+}
+
+.paper::after{
+    content:"";
+    position:absolute;
+    top:-20%;
+    left:-45%;
+    width:35%;
+    height:140%;
+    pointer-events:none;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);
+    transform:rotate(12deg);
+    animation:paperLight 8s ease-in-out infinite;
+}
+
+@keyframes paperLight{
+    0%,62%,100%{left:-45%;opacity:0}
+    70%{opacity:.8}
+    84%{left:125%;opacity:0}
+}
+
+/* Final scene: slower, softer cinematic movement around the existing image. */
+#final{
+    isolation:isolate;
+    overflow:hidden;
+}
+
+#final::before{
+    content:"";
+    position:absolute;
+    width:80vmax;
+    height:80vmax;
+    left:50%;
+    top:40%;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(245,166,189,.11),rgba(230,196,119,.035) 42%,transparent 70%);
+    animation:finalAtmosphere 9s ease-in-out infinite alternate;
+    pointer-events:none;
+    z-index:-1;
+}
+
+@keyframes finalAtmosphere{
+    from{transform:translate(-50%,-50%) scale(.82);opacity:.65}
+    to{transform:translate(-50%,-50%) scale(1.12);opacity:1}
+}
+
+/* Memory viewer: more dimensional opening and gentle image reveal. */
+.memory-lightbox.show .memory-lightbox-image{
+    animation:memoryImageReveal .48s .04s both cubic-bezier(.16,1,.3,1);
+}
+
+@keyframes memoryImageReveal{
+    from{opacity:0;transform:scale(.975)}
+    to{opacity:1;transform:none}
+}
+
+.memory-lightbox-close{
+    transition:transform .2s ease,background .2s ease,box-shadow .2s ease;
+}
+
+.memory-lightbox-close:hover{
+    background:rgba(30,10,18,.96);
+    box-shadow:0 12px 32px rgba(0,0,0,.55),0 0 20px rgba(245,166,189,.16);
+}
+
+/* Mobile: keep every enhancement restrained and inexpensive. */
+@media(max-width:600px){
+    #premiumAmbient{opacity:.55}
+    .premium-particle{animation-duration:12s}
+    #premiumAmbient::after{opacity:.42}
+    .chat::after{animation-duration:8s}
+    .paper::after{animation-duration:10s}
+}
+
+@media(max-width:380px){
+    #premiumAmbient{opacity:.42}
+    .premium-particle:nth-child(n+7){display:none}
+    #cake .cake-stage::before{filter:blur(8px)}
+}
+
+@media(prefers-reduced-motion:reduce){
+    #premiumAmbient,
+    #premiumAmbient::after,
+    .premium-particle,
+    .chat::after,
+    .paper::after,
+    #cake .cake-stage::before,
+    #final::before{
+        animation:none!important;
+    }
+    .screen.screen-enter .wrap > *{
+        animation:none!important;
+    }
+}
+
 </style>
 </head>
 
 
 <body>
+
+<div id="premiumAmbient" aria-hidden="true"></div>
 
 <canvas id="advancedCelebrationCanvas" aria-hidden="true"></canvas>
 <div class="advanced-screen-aura" aria-hidden="true"></div>
@@ -3632,6 +4028,8 @@ body.memory-viewer-open{overflow:hidden;touch-action:none}
                 class="memory-center"
                 src="assets/image.png"
                 alt="Her"
+                loading="lazy"
+                decoding="async"
             >
 
 
@@ -3640,6 +4038,8 @@ body.memory-viewer-open{overflow:hidden;touch-action:none}
                 <img
                     src="assets/img2.jpg"
                     alt="Memory"
+                    loading="lazy"
+                    decoding="async"
                 >
 
             </div>
@@ -3650,6 +4050,8 @@ body.memory-viewer-open{overflow:hidden;touch-action:none}
                 <img
                     src="assets/img3.jpg"
                     alt="Memory"
+                    loading="lazy"
+                    decoding="async"
                 >
 
             </div>
@@ -3660,6 +4062,8 @@ body.memory-viewer-open{overflow:hidden;touch-action:none}
                 <img
                     src="assets/img4.jpg"
                     alt="Memory"
+                    loading="lazy"
+                    decoding="async"
                 >
 
             </div>
@@ -3670,6 +4074,8 @@ body.memory-viewer-open{overflow:hidden;touch-action:none}
                 <img
                     src="assets/img5.jpg"
                     alt="Memory"
+                    loading="lazy"
+                    decoding="async"
                 >
 
             </div>
@@ -4147,7 +4553,8 @@ function next(id){
 
 
     target.classList.remove(
-        "screen-enter"
+        "screen-enter",
+        "premium-screen-active"
     );
 
 
@@ -4155,7 +4562,8 @@ function next(id){
 
 
     target.classList.add(
-        "screen-enter"
+        "screen-enter",
+        "premium-screen-active"
     );
 
 
@@ -4696,7 +5104,10 @@ authDate.value =
     if(!ctx) return;
 
     const screens = Array.from(document.querySelectorAll(".screen"));
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(
+        window.devicePixelRatio || 1,
+        window.innerWidth < 600 ? 1.5 : 2
+    );
 
     let width = 0;
     let height = 0;
@@ -4774,7 +5185,7 @@ authDate.value =
         if(reduced) return;
         particles = [];
 
-        const count = width < 600 ? 34 : 62;
+        const count = width < 600 ? 20 : 46;
 
         for(let i=0;i<count;i++){
             particles.push({
@@ -4835,6 +5246,14 @@ authDate.value =
 
     function render(now){
         if(!running) return;
+
+        /* Keep the animation loop alive but do zero rendering while the
+           browser tab is hidden. This saves battery/CPU on mobile. */
+        if(document.hidden){
+            lastFrame = now;
+            requestAnimationFrame(render);
+            return;
+        }
 
         const dt = Math.min(34, now-lastFrame);
         lastFrame = now;
@@ -4939,7 +5358,7 @@ authDate.value =
         ambientSeed();
 
         if(!initial){
-            burst(width*.5,height*.43,width < 600 ? 42 : 70);
+            burst(width*.5,height*.43,width < 600 ? 26 : 56);
         }
     }
 
@@ -4960,7 +5379,7 @@ authDate.value =
                 ? event.clientY
                 : height*.5;
 
-        burst(x,y,width < 600 ? 12 : 18);
+        burst(x,y,width < 600 ? 7 : 14);
 
         const ring = document.createElement("span");
         ring.className = "advanced-burst-ring";
@@ -5009,6 +5428,80 @@ authDate.value =
 })();
 </script>
 
+
+
+<script>
+/* =========================================================
+   PREMIUM VISUAL UX — LIGHTWEIGHT ENHANCEMENTS
+========================================================= */
+(function(){
+    const ambient = document.getElementById("premiumAmbient");
+    if(ambient){
+        const particles = [
+            [8,18,5,.30,10,-12,-8,0],
+            [19,72,3,.24,12,10,-13,-2],
+            [34,12,4,.22,14,-8,11,-4],
+            [54,82,5,.26,11,12,-10,-1],
+            [69,24,3,.24,13,-11,10,-5],
+            [82,65,4,.28,15,10,12,-3],
+            [91,34,3,.20,12,-8,-11,-6],
+            [45,48,3,.16,17,8,8,-8]
+        ];
+        particles.forEach(([x,y,size,opacity,duration,dx,dy,delay])=>{
+            const el=document.createElement("span");
+            el.className="premium-particle";
+            el.style.setProperty("--x",x+"%");
+            el.style.setProperty("--y",y+"%");
+            el.style.setProperty("--size",size+"px");
+            el.style.setProperty("--opacity",opacity);
+            el.style.setProperty("--duration",duration+"s");
+            el.style.setProperty("--dx",dx+"px");
+            el.style.setProperty("--dy",dy+"px");
+            el.style.setProperty("--delay",delay+"s");
+            ambient.appendChild(el);
+        });
+    }
+
+    /* Images fade in only when they actually finish loading. */
+    document.querySelectorAll("img").forEach(img=>{
+        if(img.complete && img.naturalWidth){
+            img.classList.add("premium-image-ready");
+            return;
+        }
+        img.classList.add("premium-image-loading");
+        img.addEventListener("load",()=>{
+            img.classList.remove("premium-image-loading");
+            img.classList.add("premium-image-ready");
+        },{once:true,passive:true});
+        img.addEventListener("error",()=>{
+            img.classList.remove("premium-image-loading");
+        },{once:true,passive:true});
+    });
+
+    /* Add a soft touch response to tappable elements without changing actions. */
+    document.addEventListener("pointerdown",event=>{
+        const target=event.target.closest(".btn,.memory-clickable,.memory-lightbox-close");
+        if(target) target.classList.add("premium-touching");
+    },{passive:true});
+
+    document.addEventListener("pointerup",()=>{
+        document.querySelectorAll(".premium-touching").forEach(el=>el.classList.remove("premium-touching"));
+    },{passive:true});
+
+    document.addEventListener("pointercancel",()=>{
+        document.querySelectorAll(".premium-touching").forEach(el=>el.classList.remove("premium-touching"));
+    },{passive:true});
+
+    /* Keep the ambient layer visually quiet while the memory viewer is open. */
+    const lightbox=document.getElementById("memoryLightbox");
+    if(lightbox && ambient){
+        const observer=new MutationObserver(()=>{
+            ambient.style.opacity=lightbox.classList.contains("show") ? ".16" : "";
+        });
+        observer.observe(lightbox,{attributes:true,attributeFilter:["class"]});
+    }
+})();
+</script>
 
 <!-- Memory image viewer -->
 <div class="memory-lightbox" id="memoryLightbox" aria-hidden="true" onclick="closeMemory(event)">
