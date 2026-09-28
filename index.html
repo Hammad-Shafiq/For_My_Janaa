@@ -2995,6 +2995,25 @@ input:focus-visible{
     }
 }
 
+
+/* =====================================================
+   MEMORY IMAGE VIEWER — MOBILE FRIENDLY
+===================================================== */
+.memory-clickable{cursor:pointer;touch-action:manipulation;transition:filter .25s ease,box-shadow .25s ease}
+.memory-clickable:active{filter:brightness(1.08)}
+.memory-clickable:focus-visible{outline:2px solid var(--gold);outline-offset:5px}
+.memory-lightbox{position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:24px 16px calc(30px + env(safe-area-inset-bottom));background:rgba(7,4,9,.78);backdrop-filter:blur(18px) saturate(1.15);-webkit-backdrop-filter:blur(18px) saturate(1.15);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .32s ease,visibility .32s ease}
+.memory-lightbox::before{content:"";position:absolute;width:80vw;height:80vw;max-width:560px;max-height:560px;border-radius:50%;background:radial-gradient(circle,rgba(245,166,189,.22),transparent 68%);filter:blur(35px);pointer-events:none}
+.memory-lightbox.show{opacity:1;visibility:visible;pointer-events:auto}
+.memory-lightbox-frame{position:relative;z-index:2;width:min(88vw,430px);max-height:78svh;padding:7px;border-radius:26px;background:linear-gradient(145deg,#f5a6bd,#e6c477,#7b2947,#f5a6bd);box-shadow:0 35px 100px rgba(0,0,0,.72),0 0 55px rgba(245,166,189,.30);transform:translateY(18px) scale(.94);transition:transform .38s cubic-bezier(.16,1,.3,1)}
+.memory-lightbox.show .memory-lightbox-frame{transform:none}
+.memory-lightbox-frame::before{content:"";position:absolute;inset:1px;border-radius:24px;border:1px solid rgba(255,255,255,.48);pointer-events:none;z-index:2}
+.memory-lightbox-image{display:block;width:100%;max-height:calc(78svh - 14px);object-fit:contain;border-radius:20px;background:#fff}
+.memory-lightbox-close{position:absolute;top:-14px;right:-8px;z-index:5;width:42px;height:42px;border:1px solid rgba(255,255,255,.38);border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0;color:#fff;background:rgba(20,8,14,.88);box-shadow:0 10px 28px rgba(0,0,0,.45);font-size:28px;line-height:1;cursor:pointer}
+.memory-lightbox-close:active{transform:scale(.92)}
+.memory-lightbox-hint{position:relative;z-index:2;margin-top:16px;color:#f8dfe7;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;text-align:center}
+body.memory-viewer-open{overflow:hidden;touch-action:none}
+@media(max-width:600px){.memory-lightbox{padding:22px 12px calc(26px + env(safe-area-inset-bottom))}.memory-lightbox-frame{width:min(92vw,430px);max-height:80svh;border-radius:23px;padding:6px}.memory-lightbox-image{max-height:calc(80svh - 12px);border-radius:18px}.memory-lightbox-close{top:-12px;right:-5px;width:40px;height:40px}.memory-lightbox-hint{margin-top:14px}}
 </style>
 </head>
 
@@ -3616,7 +3635,7 @@ input:focus-visible{
             >
 
 
-            <div class="chat chat1">
+            <div class="chat chat1 memory-clickable" role="button" tabindex="0" aria-label="Open memory" onclick="openMemory('assets/img2.jpg')">
 
                 <img
                     src="assets/img2.jpg"
@@ -3626,7 +3645,7 @@ input:focus-visible{
             </div>
 
 
-            <div class="chat chat2">
+            <div class="chat chat2 memory-clickable" role="button" tabindex="0" aria-label="Open memory" onclick="openMemory('assets/img3.jpg')">
 
                 <img
                     src="assets/img3.jpg"
@@ -3636,7 +3655,7 @@ input:focus-visible{
             </div>
 
 
-            <div class="chat chat3">
+            <div class="chat chat3 memory-clickable" role="button" tabindex="0" aria-label="Open memory" onclick="openMemory('assets/img4.jpg')">
 
                 <img
                     src="assets/img4.jpg"
@@ -3646,7 +3665,7 @@ input:focus-visible{
             </div>
 
 
-            <div class="chat chat4">
+            <div class="chat chat4 memory-clickable" role="button" tabindex="0" aria-label="Open memory" onclick="openMemory('assets/img5.jpg')">
 
                 <img
                     src="assets/img5.jpg"
@@ -4990,5 +5009,23 @@ authDate.value =
 })();
 </script>
 
+
+<!-- Memory image viewer -->
+<div class="memory-lightbox" id="memoryLightbox" aria-hidden="true" onclick="closeMemory(event)">
+    <div class="memory-lightbox-frame" onclick="event.stopPropagation()">
+        <button class="memory-lightbox-close" type="button" onclick="closeMemory()" aria-label="Close memory">×</button>
+        <img class="memory-lightbox-image" id="memoryLightboxImage" src="" alt="Memory">
+    </div>
+    <div class="memory-lightbox-hint">Tap outside to close</div>
+</div>
+
+<script>
+const memoryLightbox = document.getElementById("memoryLightbox");
+const memoryLightboxImage = document.getElementById("memoryLightboxImage");
+function openMemory(imageSrc){if(!memoryLightbox||!memoryLightboxImage)return;memoryLightboxImage.src=imageSrc;memoryLightbox.classList.add("show");memoryLightbox.setAttribute("aria-hidden","false");document.body.classList.add("memory-viewer-open")}
+function closeMemory(event){if(event&&event.target!==memoryLightbox)return;if(!memoryLightbox)return;memoryLightbox.classList.remove("show");memoryLightbox.setAttribute("aria-hidden","true");document.body.classList.remove("memory-viewer-open");setTimeout(()=>{if(!memoryLightbox.classList.contains("show")&&memoryLightboxImage)memoryLightboxImage.src=""},350)}
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&memoryLightbox&&memoryLightbox.classList.contains("show"))closeMemory()});
+document.querySelectorAll(".memory-clickable").forEach(card=>{card.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();const image=card.querySelector("img");if(image)openMemory(image.src)}})});
+</script>
 </body>
 </html>
