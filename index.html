@@ -481,75 +481,67 @@ p{
    CINEMATIC OPENING
 ===================================================== */
 
-css
 /* =====================================================
    CINEMATIC OPENING — HERO IMAGE BACKGROUND
 ===================================================== */
 
 #opening{
+
     min-height:100svh;
 
     background:
-        linear-gradient(
-            180deg,
-            #09060b55 0%,
-            #09060b44 35%,
-            #09060bcc 100%
-        ),
-        url("assets/hero.jpg")
-        center center /
-        cover
-        no-repeat;
+        radial-gradient(
+            circle at 50% 45%,
+            #64213e 0%,
+            #28101c 35%,
+            #0d080c 75%
+        );
 
     position:relative;
     isolation:isolate;
 }
 
-
-/* Dark cinematic overlay */
-
-#opening::before{
-
-    content:"";
-
+.open-stars{
     position:absolute;
     inset:0;
 
-    background:
+    background-image:
         radial-gradient(
-            circle at 50% 42%,
-            transparent 0%,
-            #09060b22 35%,
-            #09060baa 100%
+            white 1px,
+            transparent 1.5px
         );
 
-    z-index:-1;
+    background-size:45px 45px;
+    opacity:.25;
+    animation:starsMove 20s linear infinite;
+    pointer-events:none;
+    z-index:0;
 }
 
+@keyframes starsMove{
+    to{
+        background-position:100px 150px;
+    }
+}
 
-/* Pink romantic glow */
-
-#opening::after{
-
-    content:"";
-
+.glow-orb{
     position:absolute;
-    inset:0;
-
-    background:
-        linear-gradient(
-            135deg,
-            #7b294766 0%,
-            transparent 35%,
-            #d85d7e33 65%,
-            #09060bcc 100%
-        );
-
-    mix-blend-mode:screen;
-
-    z-index:-1;
+    width:280px;
+    height:280px;
+    border-radius:50%;
+    background:#ed719733;
+    filter:blur(50px);
+    animation:orbPulse 4s ease-in-out infinite;
+    pointer-events:none;
+    z-index:0;
 }
 
+@keyframes orbPulse{
+    50%{
+        transform:scale(1.4);
+        opacity:.45;
+    }
+}
 
 /* =====================================================
    CONTINUOUS CELEBRATION
@@ -952,59 +944,58 @@ css
 #home{
     position:relative;
     isolation:isolate;
-    background:#160910;
+    background:#fff7fa;
+    overflow:hidden;
 }
 
-/* Same hero image used as a full-screen blurred background */
+/* Soft, very light pink background — the photo remains the focal point. */
 #home::before{
     content:"";
     position:absolute;
     inset:-35px;
     background:
-        linear-gradient(
-            180deg,
-            #7b294788 0%,
-            #d85d7e66 38%,
-            #32101fbb 100%
-        ),
-        url("assets/hero.jpg")
-        center center /
-        cover
-        no-repeat;
-
-    filter:blur(24px);
-    transform:scale(1.12);
+        radial-gradient(
+            circle at 50% 30%,
+            #ffffffee 0%,
+            #fff7fae6 34%,
+            #fbeaf1dd 68%,
+            #f3dce6cc 100%
+        );
+    filter:blur(2px);
+    transform:scale(1.05);
     z-index:-3;
 }
 
-/* Soft pink cinematic color wash */
+/* Gentle rosy glow without the heavy pink wash. */
 #home::after{
     content:"";
     position:absolute;
     inset:0;
     background:
         radial-gradient(
-            circle at 50% 35%,
-            #f5a6bd55 0%,
-            #d85d7e44 30%,
-            #7b294788 65%,
-            #09060bdd 100%
+            circle at 50% 22%,
+            #ffffffaa 0%,
+            transparent 42%
+        ),
+        linear-gradient(
+            180deg,
+            #ffffff55 0%,
+            transparent 48%,
+            #efd8e455 100%
         );
     z-index:-2;
     pointer-events:none;
 }
 
-/* Keep the existing background layer but make it
-   a subtle dark/pink glass effect */
 .home-background{
     position:absolute;
     inset:0;
     background:
         linear-gradient(
             180deg,
-            #d85d7e22 0%,
-            transparent 35%,
-            #09060baa 100%
+            #fffafc88 0%,
+            transparent 55%,
+            #f5e0e955 100%
         );
     z-index:-1;
     pointer-events:none;
@@ -1018,14 +1009,22 @@ css
     background:
         radial-gradient(
             circle,
-            #f6a9bd44,
+            #f5bfd144,
             transparent 70%
         );
     filter:blur(50px);
-    animation:
-        homeGlow 5s ease-in-out infinite;
+    animation:homeGlow 5s ease-in-out infinite;
     z-index:-1;
     pointer-events:none;
+}
+
+.home-celebration{
+    z-index:2;
+}
+
+#home .wrap{
+    position:relative;
+    z-index:10;
 }
 
 /* Make foreground content stay crisp */
@@ -2340,11 +2339,672 @@ css
 
 }
 
+
+/* =========================================================
+   FINAL POLISH — ALIGNMENT / COLOR / MOBILE STABILITY
+   No visible copy is changed by this layer.
+========================================================= */
+
+:root{
+    --pink:#f3a7bd;
+    --rose:#c95778;
+    --wine:#702640;
+    --gold:#e4c477;
+    --dark:#09060b;
+    --cream:#fff8fa;
+    --text-soft:#ead8de;
+    --glass:rgba(255,255,255,.075);
+    --glass-border:rgba(245,179,198,.22);
+}
+
+/* Consistent vertical rhythm */
+.screen{
+    padding:clamp(28px,5vw,48px) 18px;
+}
+
+.wrap{
+    width:min(100%,520px);
+}
+
+h1,h2,h3,p{
+    overflow-wrap:anywhere;
+}
+
+h1,h2{
+    text-wrap:balance;
+}
+
+h3{
+    margin:14px 0;
+    font-size:clamp(18px,4.5vw,23px);
+    line-height:1.45;
+}
+
+p{
+    margin:12px auto;
+    max-width:48rem;
+}
+
+/* Buttons: same text, cleaner geometry */
+.btn{
+    min-height:52px;
+    min-width:min(100%,220px);
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    line-height:1.25;
+    padding:14px 26px;
+    background:linear-gradient(135deg,#d96887 0%,#7a2a49 100%);
+    box-shadow:0 12px 34px rgba(0,0,0,.34),0 0 28px rgba(217,104,135,.22);
+}
+
+.btn:hover{
+    box-shadow:0 16px 40px rgba(0,0,0,.40),0 0 36px rgba(217,104,135,.28);
+}
+
+/* Authentication */
+#auth{
+    padding:24px 16px;
+}
+
+.auth-card{
+    width:min(100%,430px);
+    margin:auto;
+    padding:clamp(30px,7vw,40px) clamp(20px,6vw,30px) 30px;
+}
+
+.auth-title{
+    line-height:1.05;
+    text-wrap:balance;
+}
+
+.auth-subtitle{
+    text-wrap:balance;
+}
+
+.auth-input{
+    min-height:52px;
+}
+
+.auth-field{
+    margin-bottom:17px;
+}
+
+/* Opening: keep the content optically centered */
+#opening{
+    padding-inline:18px;
+}
+
+.opening-content{
+    width:min(100%,540px);
+    margin:auto;
+    padding:42px 8px 28px;
+}
+
+.opening-content h1{
+    margin:16px auto 12px;
+}
+
+.opening-content h3{
+    max-width:440px;
+    margin:12px auto;
+}
+
+.opening-content p{
+    max-width:450px;
+}
+
+/* Home */
+#home{
+    padding-block:34px 40px;
+}
+
+#home .wrap{
+    width:min(100%,520px);
+}
+
+.hero-container{
+    width:min(92vw,500px);
+    margin:18px auto 20px;
+    padding:7px;
+}
+
+.hero-image,
+.hero-overlay{
+    border-radius:30px 30px 90px 90px;
+}
+
+.hero-caption{
+    left:24px;
+    right:24px;
+    bottom:28px;
+}
+
+.hero-caption p{
+    max-width:390px;
+    margin:8px auto 0;
+}
+
+/* Intro / birthday screen */
+#introMessage{
+    padding-block:40px;
+}
+
+#introMessage .wrap{
+    width:min(100%,560px);
+}
+
+#introMessage h2{
+    max-width:520px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#introMessage p{
+    max-width:470px;
+}
+
+/* Cake */
+#cake{
+    padding-block:36px 42px;
+}
+
+#cake .wrap{
+    width:min(100%,540px);
+}
+
+.cake-stage{
+    min-height:350px;
+    margin:4px auto;
+}
+
+.cake{
+    line-height:1;
+    font-size:clamp(100px,30vw,145px);
+}
+
+.cake-result{
+    width:min(100%,440px);
+    margin:0 auto;
+}
+
+.cake-result .btn{
+    margin-top:8px;
+}
+
+/* Memories: keep the orbit inside the viewport */
+#memories{
+    padding-block:36px 42px;
+}
+
+#memories .wrap{
+    width:min(100%,540px);
+}
+
+.memory-stage{
+    width:min(100%,420px);
+    height:min(620px,132vw);
+    min-height:500px;
+    margin:8px auto 10px;
+}
+
+.memory-center{
+    width:clamp(150px,38vw,190px);
+    height:clamp(215px,54vw,270px);
+}
+
+.memory-orbit{
+    width:min(82vw,350px);
+    height:min(116vw,490px);
+}
+
+.chat{
+    width:clamp(108px,29vw,135px);
+}
+
+#memories > .wrap > p{
+    max-width:390px;
+}
+
+/* Things/cards */
+#things{
+    padding-block:40px 46px;
+}
+
+#things .wrap{
+    width:min(100%,540px);
+}
+
+.story-card{
+    width:100%;
+    margin:14px 0 !important;
+    padding:clamp(22px,6vw,30px) !important;
+}
+
+.story-card h3{
+    margin:10px 0 8px;
+}
+
+.story-card p{
+    margin-bottom:0;
+}
+
+/* Letter */
+#letter{
+    padding-block:36px 44px;
+}
+
+#letter .wrap{
+    width:min(100%,560px);
+}
+
+#letter h2,
+#letter h3{
+    text-wrap:balance;
+}
+
+.paper{
+    width:100%;
+    min-height:350px;
+    max-height:none;
+    margin:22px auto 0;
+    padding:26px clamp(19px,5vw,30px);
+    font-size:clamp(15px,3.9vw,18px);
+    line-height:1.85;
+    overflow-wrap:anywhere;
+}
+
+/* Final */
+#final{
+    padding-block:38px 46px;
+}
+
+#final .wrap{
+    width:min(100%,520px);
+}
+
+.final-image{
+    display:block;
+    width:min(78vw,340px);
+    margin:22px auto 24px;
+}
+
+#final p{
+    max-width:430px;
+}
+
+/* Avoid accidental horizontal scroll from animated effects */
+.open-celebration,
+.birthday-effects,
+.burst{
+    max-width:100%;
+}
+
+/* Touch-friendly focus states */
+button:focus-visible,
+input:focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:3px;
+}
+
+/* Small phones */
+@media(max-width:600px){
+    .home-celebration .rose-effect{
+        opacity:.48;
+    }
+
+    .home-celebration .petal-effect{
+        opacity:.30;
+    }
+
+    .home-celebration .birthday-sparkle{
+        font-size:15px;
+    }
+
+    .screen{
+        padding:26px 14px 34px;
+    }
+
+    h1{
+        font-size:clamp(39px,12.5vw,60px);
+    }
+
+    h2{
+        font-size:clamp(32px,9.5vw,46px);
+    }
+
+    .script{
+        font-size:clamp(40px,12vw,48px);
+    }
+
+    .btn{
+        width:min(100%,340px);
+    }
+
+    .opening-content{
+        padding-top:34px;
+    }
+
+    .open-heart{
+        font-size:68px;
+    }
+
+    .hero-container{
+        width:min(94vw,480px);
+        margin-top:14px;
+    }
+
+    .hero-caption{
+        bottom:22px;
+        left:18px;
+        right:18px;
+    }
+
+    .hero-caption .script{
+        font-size:44px;
+    }
+
+    .memory-stage{
+        width:100%;
+        height:540px;
+        min-height:0;
+    }
+
+    .memory-orbit{
+        width:82vw;
+        height:112vw;
+        max-height:430px;
+    }
+
+    .chat{
+        width:28vw;
+        max-width:124px;
+    }
+
+    .chat1{left:1%;}
+    .chat2{right:1%;}
+    .chat3{left:1%;}
+    .chat4{right:2%;}
+
+    .cake-stage{
+        min-height:300px;
+    }
+
+    .cake{
+        font-size:112px;
+    }
+}
+
+@media(max-width:380px){
+    .screen{
+        padding-inline:12px;
+    }
+
+    .auth-card{
+        border-radius:26px;
+    }
+
+    .auth-heart{
+        font-size:56px;
+    }
+
+    .auth-title{
+        font-size:48px;
+    }
+
+    .memory-stage{
+        height:500px;
+    }
+
+    .memory-center{
+        width:145px;
+        height:208px;
+    }
+
+    .memory-orbit{
+        width:88vw;
+        height:430px;
+    }
+
+    .chat{
+        width:106px;
+    }
+
+    .cake{
+        font-size:100px;
+    }
+
+    .paper{
+        padding:22px 17px;
+        font-size:14.5px;
+        line-height:1.78;
+    }
+}
+
+@media(prefers-reduced-motion:reduce){
+    *,
+    *::before,
+    *::after{
+        animation-duration:.01ms !important;
+        animation-iteration-count:1 !important;
+        scroll-behavior:auto !important;
+        transition-duration:.01ms !important;
+    }
+}
+
+
+
+/* =========================================================
+   ADVANCED CELEBRATION LAYER
+   Visual-only enhancement: does not replace existing options
+   or application functions.
+========================================================= */
+
+#advancedCelebrationCanvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:9996;
+    pointer-events:none;
+    display:block;
+    opacity:1;
+}
+
+.advanced-screen-aura{
+    position:fixed;
+    inset:0;
+    z-index:9995;
+    pointer-events:none;
+    overflow:hidden;
+    opacity:0;
+    transition:opacity .8s ease;
+    mix-blend-mode:screen;
+}
+
+.advanced-screen-aura::before,
+.advanced-screen-aura::after{
+    content:"";
+    position:absolute;
+    width:55vmax;
+    height:55vmax;
+    border-radius:50%;
+    filter:blur(65px);
+    opacity:.18;
+    will-change:transform;
+}
+
+.advanced-screen-aura::before{
+    left:-20vmax;
+    top:10%;
+    background:radial-gradient(circle,rgba(245,166,189,.65),transparent 68%);
+    animation:advancedAuraOne 9s ease-in-out infinite alternate;
+}
+
+.advanced-screen-aura::after{
+    right:-22vmax;
+    bottom:-10%;
+    background:radial-gradient(circle,rgba(230,196,119,.48),transparent 68%);
+    animation:advancedAuraTwo 11s ease-in-out infinite alternate;
+}
+
+@keyframes advancedAuraOne{
+    from{transform:translate3d(0,0,0) scale(.82)}
+    to{transform:translate3d(18vw,10vh,0) scale(1.12)}
+}
+
+@keyframes advancedAuraTwo{
+    from{transform:translate3d(0,0,0) scale(.88)}
+    to{transform:translate3d(-15vw,-12vh,0) scale(1.16)}
+}
+
+.screen.advanced-celebration-active .advanced-screen-aura{
+    opacity:1;
+}
+
+.screen.advanced-celebration-active{
+    isolation:isolate;
+}
+
+/* Existing component animations are intentionally preserved. */
+
+/* Existing buttons get a richer but non-destructive interaction */
+.screen.advanced-celebration-active .btn{
+    position:relative;
+    overflow:hidden;
+    isolation:isolate;
+    animation:advancedButtonBreath 3s ease-in-out infinite;
+}
+
+.screen.advanced-celebration-active .btn::before{
+    content:"";
+    position:absolute;
+    top:-60%;
+    left:-45%;
+    width:34%;
+    height:220%;
+    transform:rotate(24deg) translateX(-180%);
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.30),transparent);
+    pointer-events:none;
+    animation:advancedButtonShine 3.8s ease-in-out infinite;
+}
+
+@keyframes advancedButtonBreath{
+    0%,100%{box-shadow:0 12px 34px rgba(0,0,0,.34),0 0 28px rgba(217,104,135,.22)}
+    50%{box-shadow:0 14px 40px rgba(0,0,0,.38),0 0 42px rgba(245,166,189,.38)}
+}
+
+@keyframes advancedButtonShine{
+    0%,35%{transform:rotate(24deg) translateX(-180%)}
+    58%,100%{transform:rotate(24deg) translateX(430%)}
+}
+
+/* Screen-specific atmosphere */
+#auth.advanced-celebration-active .advanced-screen-aura::before{
+    background:radial-gradient(circle,rgba(239,113,149,.62),transparent 68%);
+}
+#opening.advanced-celebration-active .advanced-screen-aura::before{
+    background:radial-gradient(circle,rgba(245,166,189,.72),transparent 68%);
+}
+#home.advanced-celebration-active .advanced-screen-aura::before{
+    background:radial-gradient(circle,rgba(255,214,226,.62),transparent 68%);
+}
+#introMessage.advanced-celebration-active .advanced-screen-aura::before{
+    background:radial-gradient(circle,rgba(230,196,119,.48),transparent 68%);
+}
+#cake.advanced-celebration-active .advanced-screen-aura::before{
+    background:radial-gradient(circle,rgba(216,93,126,.70),transparent 68%);
+}
+#memories.advanced-celebration-active .advanced-screen-aura::before{
+    background:radial-gradient(circle,rgba(245,166,189,.64),transparent 68%);
+}
+#things.advanced-celebration-active .advanced-screen-aura::before{
+    background:radial-gradient(circle,rgba(230,196,119,.45),transparent 68%);
+}
+#letter.advanced-celebration-active .advanced-screen-aura::before{
+    background:radial-gradient(circle,rgba(255,214,226,.55),transparent 68%);
+}
+#final.advanced-celebration-active .advanced-screen-aura::before{
+    background:radial-gradient(circle,rgba(230,196,119,.56),transparent 68%);
+}
+
+/* Small floating highlight around the viewport */
+.advanced-edge-glow{
+    position:fixed;
+    inset:10px;
+    z-index:9994;
+    pointer-events:none;
+    border:1px solid rgba(255,255,255,.045);
+    border-radius:28px;
+    box-shadow:
+        inset 0 0 70px rgba(245,166,189,.025),
+        0 0 70px rgba(245,166,189,.025);
+    animation:advancedEdgePulse 4.5s ease-in-out infinite;
+}
+
+@keyframes advancedEdgePulse{
+    0%,100%{opacity:.35}
+    50%{opacity:.8}
+}
+
+.advanced-burst-ring{
+    position:fixed;
+    width:12px;
+    height:12px;
+    border:2px solid rgba(255,232,240,.92);
+    border-radius:50%;
+    z-index:10000;
+    pointer-events:none;
+    transform:translate(-50%,-50%) scale(.2);
+    animation:advancedRing .75s cubic-bezier(.16,1,.3,1) forwards;
+}
+
+@keyframes advancedRing{
+    0%{opacity:1;transform:translate(-50%,-50%) scale(.2)}
+    70%{opacity:.7}
+    100%{opacity:0;transform:translate(-50%,-50%) scale(9)}
+}
+
+@media(max-width:600px){
+    .advanced-screen-aura::before,
+    .advanced-screen-aura::after{
+        filter:blur(45px);
+        opacity:.14;
+    }
+
+    .advanced-edge-glow{
+        inset:6px;
+        border-radius:20px;
+    }
+
+    .screen.advanced-celebration-active .wrap > *{
+        animation-duration:.72s;
+    }
+}
+
+@media(prefers-reduced-motion:reduce){
+    #advancedCelebrationCanvas,
+    .advanced-screen-aura,
+    .advanced-edge-glow{
+        display:none!important;
+    }
+
+    .screen.advanced-celebration-active .btn{
+        animation:none!important;
+    }
+}
+
 </style>
 </head>
 
 
 <body>
+
+<canvas id="advancedCelebrationCanvas" aria-hidden="true"></canvas>
+<div class="advanced-screen-aura" aria-hidden="true"></div>
+<div class="advanced-edge-glow" aria-hidden="true"></div>
+
 
 
 <!-- =====================================================
@@ -2511,6 +3171,9 @@ css
     class="screen hidden"
 >
 
+    <div class="open-stars" aria-hidden="true"></div>
+    <div class="glow-orb" aria-hidden="true"></div>
+
     <!-- CONTINUOUS CELEBRATION -->
 
     <div
@@ -2639,6 +3302,32 @@ css
     <div class="home-background"></div>
 
     <div class="home-glow"></div>
+
+    <!-- SOFT CELEBRATION EFFECTS -->
+    <div class="birthday-effects home-celebration" aria-hidden="true">
+
+        <span class="rose-effect rose-1">🌹</span>
+        <span class="rose-effect rose-2">🌹</span>
+        <span class="rose-effect rose-3">🌹</span>
+        <span class="rose-effect rose-4">🌹</span>
+        <span class="rose-effect rose-5">🌹</span>
+        <span class="rose-effect rose-6">🌹</span>
+
+        <span class="petal-effect petal-1">🌸</span>
+        <span class="petal-effect petal-2">🌸</span>
+        <span class="petal-effect petal-3">🌸</span>
+        <span class="petal-effect petal-4">🌸</span>
+        <span class="petal-effect petal-5">🌸</span>
+        <span class="petal-effect petal-6">🌸</span>
+
+        <span class="birthday-sparkle sparkle-1">✦</span>
+        <span class="birthday-sparkle sparkle-2">✧</span>
+        <span class="birthday-sparkle sparkle-3">✨</span>
+        <span class="birthday-sparkle sparkle-4">✦</span>
+        <span class="birthday-sparkle sparkle-5">✨</span>
+        <span class="birthday-sparkle sparkle-6">✧</span>
+
+    </div>
 
 
     <div class="wrap center screen-enter">
@@ -2922,7 +3611,7 @@ css
 
             <img
                 class="memory-center"
-                src="assets/hero.jpg"
+                src="assets/image.png"
                 alt="Her"
             >
 
@@ -2930,7 +3619,7 @@ css
             <div class="chat chat1">
 
                 <img
-                    src="https://images.unsplash.com/photo-1511988617509-a57c8a288659?auto=format&fit=crop&w=400&q=90"
+                    src="assets/img2.jpg"
                     alt="Memory"
                 >
 
@@ -2940,7 +3629,7 @@ css
             <div class="chat chat2">
 
                 <img
-                    src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=400&q=90"
+                    src="assets/img3.jpg"
                     alt="Memory"
                 >
 
@@ -2950,7 +3639,7 @@ css
             <div class="chat chat3">
 
                 <img
-                    src="https://images.unsplash.com/photo-1504150558240-0b4fd8946624?auto=format&fit=crop&w=400&q=90"
+                    src="assets/img4.jpg"
                     alt="Memory"
                 >
 
@@ -2960,7 +3649,7 @@ css
             <div class="chat chat4">
 
                 <img
-                    src="https://images.unsplash.com/photo-1506869640319-fe1a24fd76dc?auto=format&fit=crop&w=400&q=90"
+                    src="assets/img5.jpg"
                     alt="Memory"
                 >
 
@@ -3215,6 +3904,7 @@ css
 </section>
 
 
+
 <script>
 
 /* =====================================================
@@ -3389,7 +4079,7 @@ setTimeout(
 
     },
 
-    100
+    1000
 );
 
 
@@ -3452,7 +4142,7 @@ function next(id){
 
     window.scrollTo({
         top:0,
-        behavior:"instant"
+        behavior:"auto"
     });
 
 
@@ -3965,9 +4655,339 @@ authSection.classList.remove(
 */
 
 authDate.value =
-    "2005-10-01";
+    "2005-10-06";
 
 
+</script>
+
+
+<script>
+/* =========================================================
+   ADVANCED CELEBRATION ENGINE
+   This layer observes the existing flow only.
+   It does NOT replace or modify existing site functions.
+========================================================= */
+(function(){
+    "use strict";
+
+    const canvas = document.getElementById("advancedCelebrationCanvas");
+    if(!canvas) return;
+
+    const ctx = canvas.getContext("2d", {alpha:true});
+    if(!ctx) return;
+
+    const screens = Array.from(document.querySelectorAll(".screen"));
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    let width = 0;
+    let height = 0;
+    let activeScreen = null;
+    let particles = [];
+    let stars = [];
+    let lastFrame = performance.now();
+    let running = true;
+
+    const reduced =
+        window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function resize(){
+        width = window.innerWidth;
+        height = window.innerHeight;
+
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
+        canvas.style.width = width + "px";
+        canvas.style.height = height + "px";
+
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+
+        const starCount = reduced ? 0 : (width < 600 ? 28 : 55);
+
+        stars = Array.from({length:starCount}, () => ({
+            x:Math.random()*width,
+            y:Math.random()*height,
+            r:Math.random()*1.5+.35,
+            a:Math.random()*.55+.15,
+            speed:Math.random()*.0008+.00025,
+            phase:Math.random()*Math.PI*2
+        }));
+    }
+
+    function palette(){
+        const id = activeScreen ? activeScreen.id : "opening";
+
+        const map = {
+            auth:["#f5a6bd","#e6c477","#ffffff"],
+            opening:["#f5a6bd","#e6c477","#fff5fa"],
+            home:["#f5a6bd","#ffffff","#e6c477"],
+            introMessage:["#e6c477","#f5a6bd","#ffffff"],
+            cake:["#d85d7e","#f5a6bd","#e6c477"],
+            memories:["#f5a6bd","#e6c477","#ffffff"],
+            things:["#e6c477","#f5a6bd","#ffffff"],
+            letter:["#f5a6bd","#ffffff","#e6c477"],
+            final:["#e6c477","#f5a6bd","#ffffff"]
+        };
+
+        return map[id] || map.opening;
+    }
+
+    function makeParticle(x,y,burst){
+        const colors = palette();
+
+        return {
+            x:x,
+            y:y,
+            vx:(Math.random()-.5) * (burst ? 8.5 : 1.3),
+            vy:(Math.random()-.5) * (burst ? 8.5 : 1.2) - (burst ? 1.8 : .25),
+            gravity:burst ? .12 : .012,
+            life:burst ? 1 : Math.random()*.8+.35,
+            decay:burst ? .018+Math.random()*.014 : .0018+Math.random()*.0015,
+            size:burst ? Math.random()*4+1.8 : Math.random()*2.4+.6,
+            rotation:Math.random()*Math.PI*2,
+            spin:(Math.random()-.5)*.12,
+            color:colors[Math.floor(Math.random()*colors.length)],
+            heart:Math.random()<.28
+        };
+    }
+
+    function ambientSeed(){
+        if(reduced) return;
+        particles = [];
+
+        const count = width < 600 ? 34 : 62;
+
+        for(let i=0;i<count;i++){
+            particles.push({
+                x:Math.random()*width,
+                y:Math.random()*height,
+                vx:(Math.random()-.5)*.12,
+                vy:-(Math.random()*.18+.04),
+                gravity:0,
+                life:1,
+                decay:0,
+                size:Math.random()*2.2+.55,
+                rotation:Math.random()*Math.PI*2,
+                spin:(Math.random()-.5)*.02,
+                color:palette()[Math.floor(Math.random()*palette().length)],
+                heart:false,
+                ambient:true,
+                phase:Math.random()*Math.PI*2
+            });
+        }
+    }
+
+    function burst(x,y,count){
+        if(reduced) return;
+
+        for(let i=0;i<count;i++){
+            particles.push(makeParticle(x,y,true));
+        }
+
+        if(particles.length > 360){
+            particles.splice(0, particles.length-360);
+        }
+    }
+
+    function drawHeart(x,y,size,rotation,color,alpha){
+        ctx.save();
+        ctx.translate(x,y);
+        ctx.rotate(rotation);
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        const s = size;
+        ctx.moveTo(0,s*.28);
+        ctx.bezierCurveTo(-s*1.05,-s*.35,-s*.72,-s*1.05,0,-s*.55);
+        ctx.bezierCurveTo(s*.72,-s*1.05,s*1.05,-s*.35,0,s*.28);
+        ctx.fill();
+        ctx.restore();
+    }
+
+    function drawStar(x,y,size,color,alpha){
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = color;
+        ctx.translate(x,y);
+        ctx.rotate(Math.PI/4);
+        ctx.fillRect(-size/2,-size/2,size,size);
+        ctx.restore();
+    }
+
+    function render(now){
+        if(!running) return;
+
+        const dt = Math.min(34, now-lastFrame);
+        lastFrame = now;
+
+        ctx.clearRect(0,0,width,height);
+
+        if(!reduced){
+            for(const star of stars){
+                const twinkle =
+                    star.a +
+                    Math.sin(now*star.speed + star.phase)*.18;
+
+                drawStar(
+                    star.x,
+                    star.y,
+                    star.r,
+                    "#fff7fb",
+                    Math.max(.08,twinkle)
+                );
+
+                star.y -= dt*.003;
+
+                if(star.y < -5){
+                    star.y = height+5;
+                    star.x = Math.random()*width;
+                }
+            }
+
+            for(let i=particles.length-1;i>=0;i--){
+                const p = particles[i];
+
+                if(p.ambient){
+                    p.x += p.vx * dt;
+                    p.y += p.vy * dt;
+                    p.phase += dt*.001;
+
+                    if(p.y < -10){
+                        p.y = height+10;
+                        p.x = Math.random()*width;
+                    }
+
+                    const alpha = .12 + (Math.sin(p.phase)+1)*.12;
+                    if(p.heart){
+                        drawHeart(p.x,p.y,p.size,p.rotation,p.color,alpha);
+                    }else{
+                        drawStar(p.x,p.y,p.size,p.color,alpha);
+                    }
+                    continue;
+                }
+
+                p.x += p.vx * dt*.06;
+                p.y += p.vy * dt*.06;
+                p.vy += p.gravity * dt*.06;
+                p.rotation += p.spin * dt*.06;
+                p.life -= p.decay * dt;
+
+                if(p.heart){
+                    drawHeart(
+                        p.x,p.y,
+                        p.size*1.7,
+                        p.rotation,
+                        p.color,
+                        Math.max(0,p.life)
+                    );
+                }else{
+                    ctx.save();
+                    ctx.globalAlpha = Math.max(0,p.life);
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                if(p.life <= 0 || p.y > height+50){
+                    particles.splice(i,1);
+                }
+            }
+        }
+
+        requestAnimationFrame(render);
+    }
+
+    function setActiveScreen(screen,initial){
+        if(!screen || screen.classList.contains("hidden")) return;
+
+        if(activeScreen === screen && !initial) return;
+
+        if(activeScreen){
+            activeScreen.classList.remove("advanced-celebration-active");
+        }
+
+        activeScreen = screen;
+        activeScreen.classList.remove("advanced-celebration-active");
+
+        requestAnimationFrame(() => {
+            if(activeScreen === screen){
+                activeScreen.classList.add("advanced-celebration-active");
+            }
+        });
+
+        ambientSeed();
+
+        if(!initial){
+            burst(width*.5,height*.43,width < 600 ? 42 : 70);
+        }
+    }
+
+    function findVisibleScreen(){
+        return screens.find(screen => !screen.classList.contains("hidden"));
+    }
+
+    function interactionBurst(event){
+        if(reduced) return;
+
+        const x =
+            typeof event.clientX === "number"
+                ? event.clientX
+                : width*.5;
+
+        const y =
+            typeof event.clientY === "number"
+                ? event.clientY
+                : height*.5;
+
+        burst(x,y,width < 600 ? 12 : 18);
+
+        const ring = document.createElement("span");
+        ring.className = "advanced-burst-ring";
+        ring.style.left = x + "px";
+        ring.style.top = y + "px";
+        document.body.appendChild(ring);
+
+        setTimeout(() => ring.remove(),800);
+    }
+
+    function watchScreens(){
+        const observer = new MutationObserver(() => {
+            const visible = findVisibleScreen();
+
+            if(visible && visible !== activeScreen){
+                setActiveScreen(visible,false);
+            }
+        });
+
+        screens.forEach(screen => {
+            observer.observe(screen,{
+                attributes:true,
+                attributeFilter:["class"]
+            });
+        });
+
+        const first = findVisibleScreen();
+        if(first) setActiveScreen(first,true);
+    }
+
+    window.addEventListener("resize",resize,{passive:true});
+
+    document.addEventListener("pointerdown",function(event){
+        if(
+            event.target.closest("button") ||
+            event.target.closest("input")
+        ){
+            interactionBurst(event);
+        }
+    },{passive:true});
+
+    resize();
+    watchScreens();
+    requestAnimationFrame(render);
+
+})();
 </script>
 
 </body>
