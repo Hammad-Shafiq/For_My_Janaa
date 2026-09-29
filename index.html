@@ -2799,6 +2799,97 @@ input:focus-visible{
 
 
 
+
+/* =========================================================
+   FINAL GIFT — SPECIAL BOTTOM-TO-TOP CELEBRATION
+   Visual-only layer. Runs only when the final gift is opened.
+========================================================= */
+#finalSpecialCelebration{
+    position:fixed;
+    inset:0;
+    z-index:10060;
+    pointer-events:none;
+    overflow:hidden;
+    opacity:0;
+    visibility:hidden;
+}
+#finalSpecialCelebration.show{
+    opacity:1;
+    visibility:visible;
+}
+#finalSpecialCelebration .special-celebration-glow{
+    position:absolute;
+    left:50%;
+    bottom:-22vh;
+    width:58vmax;
+    height:58vmax;
+    transform:translateX(-50%) scale(.55);
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(255,239,246,.95) 0,rgba(245,166,189,.48) 20%,rgba(230,196,119,.18) 42%,transparent 70%);
+    filter:blur(10px);
+    opacity:0;
+}
+#finalSpecialCelebration.show .special-celebration-glow{
+    animation:specialGlowRise 2.35s cubic-bezier(.16,1,.3,1) forwards;
+}
+.special-celebration-particle{
+    position:absolute;
+    left:var(--left);
+    bottom:-12vh;
+    width:var(--size);
+    height:var(--size);
+    border-radius:50%;
+    background:var(--particle-color);
+    box-shadow:0 0 10px var(--particle-color),0 0 24px rgba(255,255,255,.32);
+    opacity:0;
+    will-change:transform,opacity;
+    animation:specialParticleRise var(--duration) cubic-bezier(.16,.8,.25,1) var(--delay) forwards;
+}
+.special-celebration-particle.heart{
+    width:var(--size);
+    height:var(--size);
+    border-radius:0;
+    background:transparent;
+    box-shadow:none;
+    transform:rotate(-45deg);
+}
+.special-celebration-particle.heart::before,
+.special-celebration-particle.heart::after{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    background:var(--particle-color);
+    box-shadow:0 0 9px var(--particle-color);
+}
+.special-celebration-particle.heart::before{top:-50%;left:0}
+.special-celebration-particle.heart::after{top:0;left:50%}
+.special-celebration-particle.heart{background:var(--particle-color)}
+.special-celebration-particle.star{
+    border-radius:2px;
+    transform:rotate(45deg);
+}
+@keyframes specialParticleRise{
+    0%{opacity:0;transform:translate3d(0,0,0) scale(.35) rotate(0deg)}
+    12%{opacity:.95}
+    72%{opacity:.82}
+    100%{opacity:0;transform:translate3d(var(--drift),-112vh,0) scale(1.15) rotate(var(--rotate))}
+}
+@keyframes specialGlowRise{
+    0%{opacity:0;transform:translate(-50%,24vh) scale(.42)}
+    25%{opacity:.9}
+    70%{opacity:.48}
+    100%{opacity:0;transform:translate(-50%,-58vh) scale(1.35)}
+}
+@media(max-width:600px){
+    #finalSpecialCelebration .special-celebration-glow{width:90vw;height:90vw}
+}
+@media(prefers-reduced-motion:reduce){
+    #finalSpecialCelebration{display:none !important}
+}
+
+
 /* =========================================================
    ADVANCED CELEBRATION LAYER
    Visual-only enhancement: does not replace existing options
@@ -2814,6 +2905,17 @@ input:focus-visible{
     pointer-events:none;
     display:block;
     opacity:1;
+}
+
+/* During the final-gift reveal, the existing celebration engine rises above
+   the full-screen card so the burst is genuinely full-screen. */
+body.final-celebration-active #advancedCelebrationCanvas{
+    z-index:10040 !important;
+}
+
+body.final-celebration-active .advanced-screen-aura{
+    z-index:10039 !important;
+    opacity:1 !important;
 }
 
 .advanced-screen-aura{
@@ -3408,6 +3510,529 @@ img.premium-image-ready{
     }
 }
 
+
+
+/* =========================================================
+   FINAL CARD FRAME — SHOW THE COMPLETE IMAGE
+   The image is never cropped; the frame adapts around it.
+========================================================= */
+.final-card-frame{
+    position:relative;
+    width:min(86vw,390px);
+    margin:24px auto 28px;
+    padding:11px;
+    border-radius:28px;
+    background:
+        linear-gradient(145deg,rgba(245,166,189,.92),rgba(228,196,119,.82) 48%,rgba(112,38,64,.92));
+    box-shadow:
+        0 24px 65px rgba(0,0,0,.34),
+        0 0 55px rgba(245,166,189,.22);
+    isolation:isolate;
+    transform:translateZ(0);
+    animation:finalFrameFloat 5s ease-in-out infinite;
+}
+
+.final-card-frame::before{
+    content:"";
+    position:absolute;
+    inset:4px;
+    border:1px solid rgba(255,248,250,.62);
+    border-radius:24px;
+    pointer-events:none;
+    z-index:2;
+}
+
+.final-card-frame::after{
+    content:"";
+    position:absolute;
+    inset:-18px;
+    border-radius:38px;
+    background:radial-gradient(circle,rgba(245,166,189,.22),transparent 66%);
+    filter:blur(12px);
+    z-index:-1;
+    pointer-events:none;
+}
+
+.final-card-frame-inner{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:9px;
+    border-radius:19px;
+    background:linear-gradient(135deg,#fffafc,#f5dce4 48%,#fff8ed);
+    box-shadow:
+        inset 0 0 0 1px rgba(112,38,64,.18),
+        inset 0 0 28px rgba(112,38,64,.08);
+    overflow:hidden;
+}
+
+.final-image{
+    display:block;
+    width:100%;
+    max-width:100%;
+    height:auto;
+    aspect-ratio:auto;
+    object-fit:contain;
+    object-position:center;
+    margin:0;
+    border-radius:12px;
+    background:#fffdf9;
+    box-shadow:
+        0 10px 28px rgba(55,20,32,.20);
+    animation:finalImageGlow 3.5s ease-in-out infinite;
+}
+
+.final-card-corner{
+    position:absolute;
+    width:20px;
+    height:20px;
+    z-index:3;
+    pointer-events:none;
+}
+
+.final-card-corner::before,
+.final-card-corner::after{
+    content:"";
+    position:absolute;
+    background:rgba(112,38,64,.45);
+    border-radius:999px;
+}
+
+.final-card-corner::before{
+    width:20px;
+    height:1px;
+}
+
+.final-card-corner::after{
+    width:1px;
+    height:20px;
+}
+
+.final-card-corner-tl{top:10px;left:10px}
+.final-card-corner-tr{top:10px;right:10px;transform:rotate(90deg)}
+.final-card-corner-bl{bottom:10px;left:10px;transform:rotate(-90deg)}
+.final-card-corner-br{bottom:10px;right:10px;transform:rotate(180deg)}
+
+@keyframes finalFrameFloat{
+    0%,100%{transform:translate3d(0,0,0) rotate(0deg)}
+    50%{transform:translate3d(0,-5px,0) rotate(.25deg)}
+}
+
+@keyframes finalImageGlow{
+    0%,100%{filter:drop-shadow(0 0 0 rgba(245,166,189,0))}
+    50%{filter:drop-shadow(0 0 12px rgba(245,166,189,.30))}
+}
+
+@media(max-width:600px){
+    .final-card-frame{
+        width:min(88vw,360px);
+        padding:9px;
+        border-radius:24px;
+    }
+
+    .final-card-frame-inner{
+        padding:7px;
+        border-radius:17px;
+    }
+
+    .final-image{
+        border-radius:10px;
+    }
+}
+
+@media(prefers-reduced-motion:reduce){
+    .final-card-frame,
+    .final-image{
+        animation:none !important;
+    }
+}
+
+
+/* =========================================================
+   FINAL GIFT REVEAL — RIBBON + ROSE SEAL
+========================================================= */
+#final{
+    position:relative;
+    overflow:hidden;
+    isolation:isolate;
+}
+
+#final::before,
+#final::after{
+    content:"";
+    position:absolute;
+    width:72vmax;
+    height:72vmax;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:-1;
+    filter:blur(50px);
+    opacity:.34;
+}
+
+#final::before{
+    left:-42vmax;
+    top:-20vmax;
+    background:radial-gradient(circle,rgba(245,166,189,.62) 0%,rgba(245,166,189,.20) 34%,transparent 68%);
+    animation:finalBgGlowOne 8s ease-in-out infinite alternate;
+}
+
+#final::after{
+    right:-40vmax;
+    bottom:-28vmax;
+    background:radial-gradient(circle,rgba(228,196,119,.48) 0%,rgba(201,87,120,.18) 38%,transparent 70%);
+    animation:finalBgGlowTwo 10s ease-in-out infinite alternate;
+}
+
+@keyframes finalBgGlowOne{
+    from{transform:translate3d(0,0,0) scale(.82);opacity:.24}
+    to{transform:translate3d(20vw,12vh,0) scale(1.08);opacity:.44}
+}
+
+@keyframes finalBgGlowTwo{
+    from{transform:translate3d(0,0,0) scale(.84);opacity:.22}
+    to{transform:translate3d(-18vw,-14vh,0) scale(1.12);opacity:.42}
+}
+
+.final-gift{
+    position:relative;
+    width:min(92vw,420px);
+    margin:24px auto 30px;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+}
+
+.final-gift .final-card-frame{
+    width:100%;
+    margin:0;
+    transform-origin:50% 50%;
+}
+
+.final-gift-wrap{
+    position:absolute;
+    inset:0;
+    z-index:8;
+    border-radius:28px;
+    overflow:hidden;
+    pointer-events:none;
+    background:
+        linear-gradient(135deg,rgba(112,38,64,.96),rgba(139,48,77,.94) 45%,rgba(91,28,51,.97));
+    box-shadow:
+        inset 0 0 0 1px rgba(255,248,250,.18),
+        0 20px 55px rgba(0,0,0,.28);
+    transition:opacity .45s ease,transform .8s cubic-bezier(.16,1,.3,1),clip-path .9s cubic-bezier(.16,1,.3,1);
+}
+
+.final-gift-wrap::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        radial-gradient(circle at 50% 50%,rgba(255,255,255,.10),transparent 28%),
+        linear-gradient(115deg,transparent 30%,rgba(255,255,255,.10) 48%,transparent 64%);
+    animation:giftPaperShine 4.5s ease-in-out infinite;
+}
+
+@keyframes giftPaperShine{
+    0%,55%{transform:translateX(-80%);opacity:0}
+    65%{opacity:.7}
+    100%{transform:translateX(80%);opacity:0}
+}
+
+.gift-ribbon{
+    position:absolute;
+    z-index:2;
+    background:linear-gradient(90deg,#d88aa2,#f4b3c6 48%,#bd607f);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 0 18px rgba(245,166,189,.14);
+}
+
+.gift-ribbon-v{
+    top:0;bottom:0;left:50%;width:17%;transform:translateX(-50%);
+}
+
+.gift-ribbon-h{
+    left:0;right:0;top:50%;height:15%;transform:translateY(-50%);
+}
+
+.gift-bow{
+    position:absolute;
+    z-index:5;
+    top:50%;
+    width:84px;
+    height:64px;
+    border:9px solid #e59ab1;
+    filter:drop-shadow(0 7px 10px rgba(45,8,23,.35));
+}
+
+.gift-bow-left{
+    left:50%;
+    border-right-width:5px;
+    border-radius:65% 35% 55% 45%;
+    transform:translate(-82%,-100%) rotate(-22deg);
+}
+
+.gift-bow-right{
+    left:50%;
+    border-left-width:5px;
+    border-radius:35% 65% 45% 55%;
+    transform:translate(-18%,-100%) rotate(22deg);
+}
+
+.gift-rose-seal{
+    position:absolute;
+    z-index:7;
+    left:50%;
+    top:50%;
+    width:82px;
+    height:82px;
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle at 36% 30%,#f8b8c9,#c94f73 62%,#76233f);
+    box-shadow:
+        0 9px 22px rgba(34,7,18,.42),
+        0 0 24px rgba(245,166,189,.35),
+        inset 0 0 0 2px rgba(255,248,250,.35);
+    animation:roseSealPulse 2.8s ease-in-out infinite;
+}
+
+.gift-rose-seal::before{
+    content:"";
+    position:absolute;
+    inset:7px;
+    border:1px solid rgba(255,248,250,.35);
+    border-radius:50%;
+}
+
+.rose-petal{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:27px;
+    height:20px;
+    border-radius:70% 35% 70% 35%;
+    background:linear-gradient(145deg,#ffd0db,#d85d7e 62%,#8b294a);
+    transform-origin:4px 9px;
+    box-shadow:0 2px 5px rgba(73,10,30,.25);
+}
+
+.rose-petal.p1{transform:translate(-3px,-10px) rotate(0deg)}
+.rose-petal.p2{transform:translate(-3px,-10px) rotate(60deg)}
+.rose-petal.p3{transform:translate(-3px,-10px) rotate(120deg)}
+.rose-petal.p4{transform:translate(-3px,-10px) rotate(180deg)}
+.rose-petal.p5{transform:translate(-3px,-10px) rotate(240deg)}
+.rose-petal.p6{transform:translate(-3px,-10px) rotate(300deg)}
+
+.rose-center{
+    position:absolute;
+    left:50%;top:50%;
+    width:18px;height:18px;
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle at 35% 30%,#ffe0e7,#b93e64 70%);
+    box-shadow:0 2px 6px rgba(60,5,22,.3);
+}
+
+@keyframes roseSealPulse{
+    50%{transform:translate(-50%,-50%) scale(1.045);box-shadow:0 9px 22px rgba(34,7,18,.42),0 0 34px rgba(245,166,189,.50),inset 0 0 0 2px rgba(255,248,250,.42)}
+}
+
+.final-gift-hint{
+    position:absolute;
+    left:50%;
+    bottom:14%;
+    z-index:9;
+    transform:translateX(-50%);
+    padding:7px 13px;
+    border-radius:999px;
+    color:#fff8fa;
+    background:rgba(9,6,11,.48);
+    border:1px solid rgba(255,248,250,.20);
+    font-size:11px;
+    letter-spacing:.08em;
+    white-space:nowrap;
+    opacity:.9;
+    backdrop-filter:blur(7px);
+    -webkit-backdrop-filter:blur(7px);
+}
+
+.final-gift:focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:5px;
+    border-radius:30px;
+}
+
+.final-gift.opening .final-gift-wrap{
+    clip-path:inset(0 0 50% 0 round 28px);
+    transform:translateY(-8%) rotateX(-14deg);
+    opacity:0;
+}
+
+.final-gift.opening .gift-bow-left{
+    transform:translate(-150%,-155%) rotate(-35deg);
+    opacity:0;
+}
+
+.final-gift.opening .gift-bow-right{
+    transform:translate(50%,-155%) rotate(35deg);
+    opacity:0;
+}
+
+.final-gift.opening .gift-rose-seal{
+    transform:translate(-50%,-50%) scale(1.45) rotate(20deg);
+    opacity:0;
+}
+
+.final-gift.opening .final-card-frame{
+    animation:giftCardReveal .95s cubic-bezier(.16,1,.3,1) forwards;
+}
+
+.final-gift.opening .final-gift-hint{opacity:0;transition:opacity .2s ease}
+
+/* Reset the gift to its fully packed state after the full-screen card is closed. */
+.final-gift.repacking .final-gift-wrap,
+.final-gift.repacking .gift-bow-left,
+.final-gift.repacking .gift-bow-right,
+.final-gift.repacking .gift-rose-seal,
+.final-gift.repacking .final-card-frame{
+    transition:none !important;
+    animation:none !important;
+}
+
+.final-gift-celebrating::after{
+    content:"";
+    position:absolute;
+    inset:-28%;
+    z-index:20;
+    pointer-events:none;
+    border-radius:50%;
+    background:
+        radial-gradient(circle,rgba(255,255,255,.32) 0 2%,transparent 3%),
+        radial-gradient(circle at 35% 35%,rgba(245,166,189,.42),transparent 35%),
+        radial-gradient(circle at 70% 60%,rgba(228,196,119,.30),transparent 38%);
+    opacity:0;
+    animation:finalGiftCelebrationGlow 1.35s ease-out forwards;
+}
+
+@keyframes finalGiftCelebrationGlow{
+    0%{transform:scale(.72);opacity:0}
+    22%{opacity:.9}
+    100%{transform:scale(1.15);opacity:0}
+}
+
+#final.final-gift-celebrating::before,
+#final.final-gift-celebrating::after{
+    opacity:.95;
+}
+
+@keyframes giftCardReveal{
+    0%{transform:scale(.96);filter:brightness(.75) saturate(.8)}
+    55%{transform:scale(1.025);filter:brightness(1.14) saturate(1.08)}
+    100%{transform:scale(1);filter:none}
+}
+
+/* Full-screen presentation of the revealed card. */
+.final-card-viewer{
+    position:fixed;
+    inset:0;
+    z-index:10020;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    background:
+        radial-gradient(circle at 50% 42%,rgba(112,38,64,.48),rgba(9,6,11,.96) 72%),
+        rgba(9,6,11,.96);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity .45s ease,visibility .45s ease;
+    overflow:auto;
+}
+
+.final-card-viewer.show{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+
+.final-card-viewer::before,
+.final-card-viewer::after{
+    content:"";
+    position:absolute;
+    width:65vmax;height:65vmax;
+    border-radius:50%;
+    filter:blur(55px);
+    pointer-events:none;
+}
+
+.final-card-viewer::before{background:radial-gradient(circle,rgba(245,166,189,.26),transparent 68%);left:-25vmax;top:-25vmax}
+.final-card-viewer::after{background:radial-gradient(circle,rgba(228,196,119,.20),transparent 68%);right:-25vmax;bottom:-25vmax}
+
+.final-card-viewer-frame{
+    position:relative;
+    z-index:2;
+    width:min(96vw,760px);
+    max-height:94vh;
+    padding:10px;
+    border-radius:24px;
+    background:linear-gradient(145deg,#f5b3c6,#e4c477 48%,#8d3150);
+    box-shadow:0 25px 100px rgba(0,0,0,.65),0 0 65px rgba(245,166,189,.30);
+    transform:scale(.88) translateY(18px);
+    transition:transform .65s cubic-bezier(.16,1,.3,1);
+}
+
+.final-card-viewer.show .final-card-viewer-frame{transform:scale(1) translateY(0)}
+
+.final-card-viewer-frame img{
+    display:block;
+    width:100%;
+    max-height:calc(94vh - 20px);
+    height:auto;
+    object-fit:contain;
+    border-radius:15px;
+    background:#fffdf9;
+    box-shadow:0 8px 30px rgba(0,0,0,.32);
+}
+
+.final-card-viewer-close{
+    position:absolute;
+    right:-8px;
+    top:-8px;
+    width:38px;height:38px;
+    border:1px solid rgba(255,248,250,.45);
+    border-radius:50%;
+    background:rgba(20,8,14,.82);
+    color:#fff;
+    font-size:25px;
+    line-height:1;
+    cursor:pointer;
+    z-index:4;
+    box-shadow:0 8px 25px rgba(0,0,0,.4);
+}
+
+.final-card-viewer-close:active{transform:scale(.94)}
+
+@media(max-width:600px){
+    .final-gift{width:min(92vw,370px)}
+    .final-gift-wrap,.final-gift-wrap::before{border-radius:24px}
+    .gift-rose-seal{width:72px;height:72px}
+    .gift-bow{width:72px;height:54px}
+    .final-gift-hint{bottom:12%;font-size:10px}
+    .final-card-viewer{padding:10px}
+    .final-card-viewer-frame{width:96vw;padding:7px;border-radius:18px}
+    .final-card-viewer-frame img{max-height:92vh;border-radius:12px}
+}
+
+@media(prefers-reduced-motion:reduce){
+    #final::before,#final::after,.gift-rose-seal,.final-gift-wrap::before{animation:none!important}
+    .final-gift.opening .final-card-frame{animation:none!important}
+    .final-card-viewer-frame{transition:none!important}
+}
+
+
+body.final-viewer-open{overflow:hidden}
 </style>
 </head>
 
@@ -4026,7 +4651,7 @@ img.premium-image-ready{
 
             <img
                 class="memory-center"
-                src="assets/image.png"
+                src="assets/img1.png"
                 alt="Her"
                 loading="lazy"
                 decoding="async"
@@ -4297,11 +4922,41 @@ img.premium-image-ready{
         </div>
 
 
-        <img
-            class="final-image"
-            src="assets/supecial.jpg"
-            alt="Our photo"
-        >
+        <div class="final-gift" id="finalGift" role="button" tabindex="0" aria-label="Open the final gift" onclick="openFinalGift()">
+            <div class="final-card-frame" aria-label="Our photo">
+                <div class="final-card-frame-inner">
+                    <span class="final-card-corner final-card-corner-tl"></span>
+                    <span class="final-card-corner final-card-corner-tr"></span>
+                    <span class="final-card-corner final-card-corner-bl"></span>
+                    <span class="final-card-corner final-card-corner-br"></span>
+                    <img
+                        class="final-image"
+                        src="assets/supecial.jpg"
+                        alt="Our photo"
+                        loading="eager"
+                        decoding="async"
+                    >
+                </div>
+            </div>
+
+            <div class="final-gift-wrap" aria-hidden="true">
+                <span class="gift-ribbon gift-ribbon-v"></span>
+                <span class="gift-ribbon gift-ribbon-h"></span>
+                <span class="gift-bow gift-bow-left"></span>
+                <span class="gift-bow gift-bow-right"></span>
+                <span class="gift-rose-seal">
+                    <span class="rose-petal p1"></span>
+                    <span class="rose-petal p2"></span>
+                    <span class="rose-petal p3"></span>
+                    <span class="rose-petal p4"></span>
+                    <span class="rose-petal p5"></span>
+                    <span class="rose-petal p6"></span>
+                    <span class="rose-center"></span>
+                </span>
+            </div>
+
+            <div class="final-gift-hint" aria-hidden="true">Tap the rose to open</div>
+        </div>
 
 
         <h2>
@@ -5337,6 +5992,12 @@ authDate.value =
         requestAnimationFrame(render);
     }
 
+    window.__birthdayAdvancedBurst=function(){
+        if(reduced) return;
+        burst(width*.5,height*.44,width < 600 ? 34 : 72);
+        burst(width*.5,height*.44,width < 600 ? 14 : 28);
+    };
+
     function setActiveScreen(screen,initial){
         if(!screen || screen.classList.contains("hidden")) return;
 
@@ -5500,6 +6161,148 @@ authDate.value =
         });
         observer.observe(lightbox,{attributes:true,attributeFilter:["class"]});
     }
+})();
+</script>
+
+
+<div id="finalSpecialCelebration" aria-hidden="true"><div class="special-celebration-glow"></div></div>
+
+<!-- Full-screen final card viewer -->
+<div class="final-card-viewer" id="finalCardViewer" aria-hidden="true" onclick="closeFinalViewer(event)">
+    <div class="final-card-viewer-frame" onclick="event.stopPropagation()">
+        <button class="final-card-viewer-close" type="button" onclick="closeFinalViewer()" aria-label="Close card">×</button>
+        <img src="assets/supecial.jpg" alt="Our photo" loading="eager" decoding="async">
+    </div>
+</div>
+
+
+
+<script>
+/* =========================================================
+   FINAL GIFT — SPECIAL BOTTOM-TO-TOP CELEBRATION
+========================================================= */
+(function(){
+    const layer=document.getElementById("finalSpecialCelebration");
+    if(!layer) return;
+
+    let timer=null;
+    let resizeTimer=null;
+
+    function makeParticles(){
+        layer.querySelectorAll(".special-celebration-particle").forEach(el=>el.remove());
+        const mobile=window.innerWidth<600;
+        const count=mobile?42:70;
+        const colors=["#f5a6bd","#ffdce8","#e6c477","#fff8fa","#d85d7e"];
+
+        for(let i=0;i<count;i++){
+            const el=document.createElement("span");
+            const isHeart=i%7===0;
+            const isStar=!isHeart && i%5===0;
+            el.className="special-celebration-particle"+(isHeart?" heart":"")+(isStar?" star":"");
+            el.style.setProperty("--left",(2+Math.random()*96)+"%");
+            el.style.setProperty("--size",(isHeart?6+Math.random()*6:2+Math.random()*5)+"px");
+            el.style.setProperty("--particle-color",colors[i%colors.length]);
+            el.style.setProperty("--duration",(1.55+Math.random()*1.25)+"s");
+            el.style.setProperty("--delay",(Math.random()*.42)+"s");
+            el.style.setProperty("--drift",((Math.random()-.5)*26)+"vw");
+            el.style.setProperty("--rotate",((Math.random()-.5)*720)+"deg");
+            layer.appendChild(el);
+        }
+    }
+
+    window.__specialFinalCelebration=function(){
+        if(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        clearTimeout(timer);
+        makeParticles();
+        layer.classList.remove("show");
+        void layer.offsetWidth;
+        layer.classList.add("show");
+        layer.setAttribute("aria-hidden","false");
+        timer=setTimeout(()=>{
+            layer.classList.remove("show");
+            layer.setAttribute("aria-hidden","true");
+        },3200);
+    };
+
+    window.addEventListener("resize",()=>{
+        clearTimeout(resizeTimer);
+        resizeTimer=setTimeout(()=>{
+            if(layer.classList.contains("show")) makeParticles();
+        },180);
+    },{passive:true});
+})();
+</script>
+
+<script>
+(function(){
+    const gift=document.getElementById("finalGift");
+    const viewer=document.getElementById("finalCardViewer");
+    let revealTimer=null;
+
+    function triggerFinalCelebration(){
+        /* Use the site's existing advanced celebration engine. */
+        const finalScreen=document.getElementById("final");
+        if(finalScreen) finalScreen.classList.add("final-gift-celebrating");
+        document.body.classList.add("final-celebration-active");
+
+        if(typeof window.__birthdayAdvancedBurst === "function") {
+            window.__birthdayAdvancedBurst();
+        }
+
+        setTimeout(()=>{
+            if(finalScreen) finalScreen.classList.remove("final-gift-celebrating");
+            document.body.classList.remove("final-celebration-active");
+        },1800);
+    }
+
+    function keepFinalGiftRevealed(){
+        if(!gift) return;
+        /* Once opened, the gift stays open. The card remains visible in the
+           original Final-section position after the full-screen viewer closes. */
+        gift.classList.remove("repacking");
+        gift.classList.add("opening");
+    }
+
+    window.openFinalGift=function(){
+        if(!gift||!viewer||gift.classList.contains("opening")) return;
+        gift.classList.remove("repacking");
+        gift.classList.add("opening");
+        triggerFinalCelebration();
+        if(typeof window.__specialFinalCelebration === "function") window.__specialFinalCelebration();
+        clearTimeout(revealTimer);
+        revealTimer=setTimeout(()=>{
+            viewer.classList.add("show");
+            viewer.setAttribute("aria-hidden","false");
+            document.body.classList.add("final-viewer-open");
+        },900);
+    };
+
+    window.closeFinalViewer=function(event){
+        if(event && event.target!==viewer) return;
+        if(!viewer) return;
+        viewer.classList.remove("show");
+        viewer.setAttribute("aria-hidden","true");
+        document.body.classList.remove("final-viewer-open");
+        clearTimeout(revealTimer);
+        /* Do NOT repack the gift. After reading, the normal Final section
+           should simply show the revealed card image as before. */
+        keepFinalGiftRevealed();
+    };
+
+    if(gift){
+        gift.addEventListener("keydown",function(event){
+            if(event.key==="Enter"||event.key===" "){
+                event.preventDefault();
+                openFinalGift();
+            }
+        });
+    }
+
+    document.addEventListener("keydown",function(event){
+        if(event.key==="Escape" && viewer && viewer.classList.contains("show")){
+            closeFinalViewer();
+        }
+    });
 })();
 </script>
 
