@@ -3328,6 +3328,17 @@ img.premium-image-ready{
     transition:opacity .65s ease;
 }
 
+/* Memories: start the central portrait immediately; it is the visual anchor. */
+#memories .memory-center{
+    content-visibility:auto;
+    contain-intrinsic-size:270px 190px;
+}
+
+#memories .chat img{
+    content-visibility:auto;
+    contain-intrinsic-size:240px 135px;
+}
+
 /* Gentle section depth without altering existing screen transition. */
 .screen.screen-enter .wrap > *{
     will-change:opacity,transform;
@@ -4658,6 +4669,7 @@ body.final-viewer-open{overflow:hidden}
 }
 
 </style>
+<link rel="preload" as="image" href="assets/img1.png" fetchpriority="high">
 </head>
 
 
@@ -5278,7 +5290,8 @@ body.final-viewer-open{overflow:hidden}
                 class="memory-center"
                 src="assets/img1.png"
                 alt="Her"
-                loading="lazy"
+                loading="eager"
+                fetchpriority="high"
                 decoding="async"
             >
 
@@ -5288,7 +5301,8 @@ body.final-viewer-open{overflow:hidden}
                 <img
                     src="assets/img2.jpg"
                     alt="Memory"
-                    loading="lazy"
+                    loading="eager"
+                    fetchpriority="auto"
                     decoding="async"
                 >
 
@@ -5300,7 +5314,8 @@ body.final-viewer-open{overflow:hidden}
                 <img
                     src="assets/img3.jpg"
                     alt="Memory"
-                    loading="lazy"
+                    loading="eager"
+                    fetchpriority="auto"
                     decoding="async"
                 >
 
@@ -5312,7 +5327,8 @@ body.final-viewer-open{overflow:hidden}
                 <img
                     src="assets/img4.jpg"
                     alt="Memory"
-                    loading="lazy"
+                    loading="eager"
+                    fetchpriority="auto"
                     decoding="async"
                 >
 
@@ -5324,7 +5340,8 @@ body.final-viewer-open{overflow:hidden}
                 <img
                     src="assets/img5.jpg"
                     alt="Memory"
-                    loading="lazy"
+                    loading="eager"
+                    fetchpriority="auto"
                     decoding="async"
                 >
 
