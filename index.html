@@ -1375,7 +1375,7 @@ p{
 .screen-enter{
 
     animation:
-        screenEnter 1.2s
+        screenEnter .92s
         cubic-bezier(.16,1,.3,1)
         both;
 }
@@ -1387,10 +1387,10 @@ p{
         opacity:0;
 
         transform:
-            scale(1.05)
-            translateY(25px);
+            scale(1.025)
+            translate3d(0,22px,0);
 
-        filter:blur(10px);
+        filter:blur(12px);
     }
 
     to{
@@ -4118,6 +4118,237 @@ body.final-viewer-open{overflow:hidden}
     }
 }
 
+
+
+/* =========================================================
+   CINEMATIC TRANSITION POLISH — VISUAL ONLY
+   Refines existing effects without changing copy, flow or controls.
+========================================================= */
+
+:root{
+    --premium-ease:cubic-bezier(.16,1,.3,1);
+    --premium-soft-ease:cubic-bezier(.22,1,.36,1);
+}
+
+/* A softer depth shift makes every screen change feel intentional. */
+.screen.screen-enter{
+    animation:screenEnterPremium .92s var(--premium-ease) both;
+    backface-visibility:hidden;
+    transform-origin:50% 48%;
+}
+
+@keyframes screenEnterPremium{
+    0%{
+        opacity:0;
+        transform:translate3d(0,22px,0) scale(1.025);
+        filter:blur(12px) saturate(.94);
+    }
+    52%{
+        opacity:1;
+        transform:translate3d(0,2px,0) scale(1.004);
+        filter:blur(2px) saturate(1.01);
+    }
+    100%{
+        opacity:1;
+        transform:none;
+        filter:none;
+    }
+}
+
+/* Content enters with a little more air between layers. */
+.screen.screen-enter .wrap > *{
+    will-change:opacity,transform;
+    backface-visibility:hidden;
+}
+
+.screen.screen-enter .wrap > *:nth-child(1){animation:premiumContentIn .68s .05s both var(--premium-ease)}
+.screen.screen-enter .wrap > *:nth-child(2){animation:premiumContentIn .68s .11s both var(--premium-ease)}
+.screen.screen-enter .wrap > *:nth-child(3){animation:premiumContentIn .68s .17s both var(--premium-ease)}
+.screen.screen-enter .wrap > *:nth-child(4){animation:premiumContentIn .68s .23s both var(--premium-ease)}
+.screen.screen-enter .wrap > *:nth-child(5){animation:premiumContentIn .68s .29s both var(--premium-ease)}
+
+@keyframes premiumContentIn{
+    from{opacity:0;transform:translate3d(0,14px,0) scale(.992)}
+    to{opacity:1;transform:translate3d(0,0,0) scale(1)}
+}
+
+/* Progress line gets a subtle moving highlight instead of a flat fill. */
+.flow-line span{
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 0 12px rgba(245,166,189,.28);
+}
+
+.flow-line span::after{
+    content:"";
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:-28%;
+    width:28%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);
+    transform:skewX(-18deg);
+    animation:flowSheen 3.8s ease-in-out infinite;
+}
+
+@keyframes flowSheen{
+    0%,55%{left:-30%;opacity:0}
+    63%{opacity:.8}
+    78%,100%{left:115%;opacity:0}
+}
+
+/* Hero photo: gentle focus + glow on screen entry, then stays still. */
+#home.screen-enter .hero-image{
+    animation:heroPremiumIn 1.05s .10s both var(--premium-ease);
+}
+
+@keyframes heroPremiumIn{
+    from{opacity:.15;transform:scale(.94) translate3d(0,18px,0);filter:blur(7px) saturate(.9)}
+    62%{opacity:1;transform:scale(1.012) translate3d(0,-2px,0);filter:blur(0) saturate(1.04)}
+    to{opacity:1;transform:none;filter:none}
+}
+
+/* Opening heart: smoother pulse rather than a hard size jump. */
+#opening.screen-enter .open-heart{
+    animation:premiumHeartIn 1.15s .08s both var(--premium-ease),heartbeat 1.7s 1.2s ease-in-out infinite;
+}
+
+@keyframes premiumHeartIn{
+    0%{opacity:0;transform:scale(.55);filter:blur(5px) drop-shadow(0 0 4px #ff8baa)}
+    60%{opacity:1;transform:scale(1.08);filter:blur(0) drop-shadow(0 0 32px #ff8baa)}
+    100%{opacity:1;transform:scale(1);filter:blur(0) drop-shadow(0 0 25px #ff8baa)}
+}
+
+/* Buttons: a refined hover/tap lift with a restrained light sweep. */
+.btn{
+    position:relative;
+    overflow:hidden;
+    isolation:isolate;
+    transition:
+        transform .28s var(--premium-ease),
+        filter .28s ease,
+        box-shadow .32s ease;
+}
+
+.btn::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:inherit;
+    background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.18) 48%,transparent 76%);
+    transform:translateX(-125%);
+    pointer-events:none;
+    opacity:0;
+}
+
+.btn:hover::after,
+.btn:focus-visible::after{
+    opacity:1;
+    animation:buttonSweep .8s var(--premium-soft-ease) both;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+    filter:brightness(1.055) saturate(1.03);
+}
+
+.btn:active{
+    transform:translateY(1px) scale(.965);
+    filter:brightness(1.08);
+}
+
+@keyframes buttonSweep{
+    from{transform:translateX(-125%)}
+    to{transform:translateX(125%)}
+}
+
+/* Memories: give cards a more physical lift while keeping orbit animation. */
+.memory-clickable{
+    transition:
+        transform .36s var(--premium-ease),
+        filter .32s ease,
+        box-shadow .36s ease;
+    backface-visibility:hidden;
+}
+
+.memory-clickable:hover{
+    transform:translate3d(0,-4px,0) scale(1.025);
+    filter:brightness(1.08) saturate(1.05);
+}
+
+.memory-clickable:active{
+    transform:scale(.955) !important;
+    filter:brightness(1.12) saturate(1.08);
+}
+
+/* Memory viewer: smoother backdrop and frame arrival. */
+.memory-lightbox{
+    transition:opacity .48s var(--premium-soft-ease),visibility .48s step-end;
+}
+
+.memory-lightbox.show{
+    transition:opacity .48s var(--premium-soft-ease),visibility 0s;
+}
+
+.memory-lightbox.show .memory-lightbox-frame{
+    animation:viewerFrameIn .62s var(--premium-ease) both;
+}
+
+@keyframes viewerFrameIn{
+    from{opacity:0;transform:translate3d(0,20px,0) scale(.94);filter:blur(7px)}
+    65%{opacity:1;transform:translate3d(0,-2px,0) scale(1.008);filter:blur(0)}
+    to{opacity:1;transform:none;filter:none}
+}
+
+/* Letter gets a quiet reveal instead of a sudden appearance. */
+#letter.screen-enter .paper{
+    animation:paperPremiumIn .85s .08s both var(--premium-ease);
+}
+
+@keyframes paperPremiumIn{
+    from{opacity:0;transform:translate3d(0,18px,0) rotateX(2deg) scale(.985);filter:blur(4px)}
+    to{opacity:1;transform:none;filter:none}
+}
+
+/* Final image receives a soft cinematic focus on entry. */
+#final.screen-enter .final-card-frame,
+#final.screen-enter .final-gift,
+#final.screen-enter .final-message{
+    animation:finalElementIn .82s both var(--premium-ease);
+}
+
+#final.screen-enter .final-card-frame{animation-delay:.08s}
+#final.screen-enter .final-gift{animation-delay:.16s}
+#final.screen-enter .final-message{animation-delay:.24s}
+
+@keyframes finalElementIn{
+    from{opacity:0;transform:translate3d(0,16px,0) scale(.985);filter:blur(4px)}
+    to{opacity:1;transform:none;filter:none}
+}
+
+/* Mobile tuning: preserve the premium feel without piling on GPU work. */
+@media(max-width:600px){
+    .screen.screen-enter{animation-duration:.82s}
+    .screen.screen-enter .wrap > *{animation-duration:.60s}
+    #home.screen-enter .hero-image{animation-duration:.88s}
+    .memory-lightbox.show .memory-lightbox-frame{animation-duration:.52s}
+    .flow-line span::after{animation-duration:4.6s}
+}
+
+@media(prefers-reduced-motion:reduce){
+    .screen.screen-enter,
+    #home.screen-enter .hero-image,
+    #opening.screen-enter .open-heart,
+    #final.screen-enter .final-card-frame,
+    #final.screen-enter .final-gift,
+    #final.screen-enter .final-message,
+    #letter.screen-enter .paper,
+    .memory-lightbox.show .memory-lightbox-frame,
+    .flow-line span::after,
+    .btn::after{
+        animation:none!important;
+    }
+}
 </style>
 </head>
 
