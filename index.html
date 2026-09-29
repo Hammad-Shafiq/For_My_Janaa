@@ -4033,6 +4033,91 @@ img.premium-image-ready{
 
 
 body.final-viewer-open{overflow:hidden}
+
+/* =========================================================
+   MOBILE PERFORMANCE OPTIMIZATION
+   Visual/story content intentionally unchanged.
+   Reduces GPU/CPU work on phones while preserving effects.
+========================================================= */
+
+@media (max-width:600px){
+
+    /* Keep decorative layers on the compositor and reduce expensive blur areas. */
+    .auth-glow{
+        filter:blur(24px);
+    }
+
+    .auth-card{
+        -webkit-backdrop-filter:blur(10px);
+        backdrop-filter:blur(10px);
+    }
+
+    .auth-success{
+        -webkit-backdrop-filter:blur(10px);
+        backdrop-filter:blur(10px);
+    }
+
+    #home::before{
+        filter:blur(8px) saturate(1.05);
+    }
+
+    .home-glow{
+        filter:blur(18px);
+    }
+
+    .birthday-screen::before{
+        filter:blur(25px);
+    }
+
+    .advanced-screen-aura::before,
+    .advanced-screen-aura::after{
+        filter:blur(30px);
+    }
+
+    .premium-particle::after{
+        filter:blur(1.5px);
+    }
+
+    /* Avoid expensive large shadows on small GPU surfaces. */
+    .hero-image{
+        box-shadow:
+            0 18px 55px rgba(0,0,0,.55),
+            0 0 0 1px #f6c4d744;
+    }
+
+    .memory-center{
+        box-shadow:0 0 45px #f08ba833;
+    }
+
+    /* The ambient canvas already supplies atmosphere; don't waste frames on
+       CSS decorative animation that is barely perceptible on small screens. */
+    .open-stars{
+        animation-duration:32s;
+    }
+
+    .auth-stars{
+        animation-duration:32s;
+    }
+
+    /* Prevent browsers from painting huge off-screen decorative layers. */
+    .open-celebration,
+    .birthday-effects,
+    #premiumAmbient{
+        contain:layout paint;
+    }
+}
+
+/* Respect battery-saving / accessibility preferences automatically. */
+@media (prefers-reduced-motion: reduce){
+    #advancedCelebrationCanvas{
+        display:none !important;
+    }
+
+    #premiumAmbient{
+        display:none !important;
+    }
+}
+
 </style>
 </head>
 
@@ -4383,6 +4468,7 @@ body.final-viewer-open{overflow:hidden}
                 class="hero-image"
                 src="assets/hero.jpg"
                 alt="Our photo"
+                fetchpriority="high"
             >
 
             <div class="hero-overlay"></div>
@@ -5761,8 +5847,12 @@ authDate.value =
     const screens = Array.from(document.querySelectorAll(".screen"));
     const dpr = Math.min(
         window.devicePixelRatio || 1,
-        window.innerWidth < 600 ? 1.5 : 2
+        window.innerWidth < 600 ? 1.15 : 1.75
     );
+
+    /* Mobile phones do not need a 60fps ambient particle canvas.
+       30fps keeps the effect smooth while substantially reducing GPU/CPU work. */
+    const frameInterval = window.innerWidth < 600 ? 1000 / 30 : 1000 / 45;
 
     let width = 0;
     let height = 0;
@@ -6171,7 +6261,7 @@ authDate.value =
 <div class="final-card-viewer" id="finalCardViewer" aria-hidden="true" onclick="closeFinalViewer(event)">
     <div class="final-card-viewer-frame" onclick="event.stopPropagation()">
         <button class="final-card-viewer-close" type="button" onclick="closeFinalViewer()" aria-label="Close card">×</button>
-        <img src="assets/supecial.jpg" alt="Our photo" loading="eager" decoding="async">
+        <img src="assets/supecial.jpg" alt="Our photo" loading="lazy" decoding="async">
     </div>
 </div>
 
