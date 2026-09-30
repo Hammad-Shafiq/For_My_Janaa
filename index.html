@@ -4675,6 +4675,8 @@ body.final-viewer-open{overflow:hidden}
 
 <body>
 
+<audio id="bgMusic" src="music/music.mp3" preload="auto" loop playsinline></audio>
+
 <div id="premiumAmbient" aria-hidden="true"></div>
 
 <canvas id="advancedCelebrationCanvas" aria-hidden="true"></canvas>
@@ -5637,6 +5639,37 @@ body.final-viewer-open{overflow:hidden}
 const CORRECT_USERNAME = "Janaa";
 const CORRECT_DATE = "2005-10-01";
 
+
+/* =====================================================
+   BACKGROUND MUSIC
+===================================================== */
+
+const bgMusic =
+    document.getElementById("bgMusic");
+
+function startMusic(){
+
+    if(!bgMusic)
+        return;
+
+    const playPromise =
+        bgMusic.play();
+
+    if(playPromise !== undefined){
+        playPromise.catch(() => {
+            /* Autoplay blocked; retry on user interaction. */
+        });
+    }
+}
+
+window.addEventListener(
+    "load",
+    () => {
+        startMusic();
+    }
+);
+
+
 const authSection =
     document.getElementById("auth");
 
@@ -5683,6 +5716,7 @@ function validateAuthentication(){
         selectedDate === CORRECT_DATE
     ){
 
+        startMusic();
         unlockWebsite();
 
         return true;
@@ -5712,6 +5746,7 @@ authUsername.addEventListener(
             authDate.value === CORRECT_DATE
         ){
 
+            startMusic();
             unlockWebsite();
 
         }
@@ -5732,6 +5767,7 @@ authDate.addEventListener(
             authDate.value === CORRECT_DATE
         ){
 
+            startMusic();
             unlockWebsite();
 
         }
@@ -5750,6 +5786,8 @@ authDate.addEventListener(
 unlockButton.addEventListener(
     "click",
     () => {
+
+        startMusic();
 
         if(
             validateAuthentication()
@@ -5770,6 +5808,8 @@ unlockButton.addEventListener(
 
 
 function unlockWebsite(){
+
+    startMusic();
 
     if(websiteUnlocked)
         return;
